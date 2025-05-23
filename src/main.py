@@ -18,50 +18,30 @@ class Assistant:
         }
 
     def show_help(self, args=None):
-        print("Available commands:")
-        for command in self.commands:
-            print(f"- {command}")
-
-    def plan_travel(self, args=None):
-        print("Let's plan your travel!")
-        try:
-            destination = input("Enter destination: ")
-            start_date = input("Enter start date (YYYY-MM-DD): ")
-            end_date = input("Enter end date (YYYY-MM-DD): ")
-            
-            # Basic validation (can be improved)
-            if not destination or not start_date or not end_date:
-                print("All fields are required. Travel plan not saved.")
-                return
-
-            new_plan = {
-                "destination": destination,
-                "start_date": start_date,
-                "end_date": end_date,
-                "status": "planned" # Default status
-            }
-            self.travel_plans.append(new_plan)
-            print(f"Travel to {destination} from {start_date} to {end_date} planned successfully!")
-        except Exception as e:
-            print(f"Error planning travel: {e}")
+       help_text = "Available commands (try natural language!):\n"
+       help_text += "- plan_travel / view_travel_plans\n"
+       help_text += "- set_reminder / view_reminders\n"
+       help_text += "- create_mind_map / add_mind_map_node / view_mind_map\n"
+       help_text += "- help\n"
+       help_text += "- exit"
+       return help_text
 
     def plan_travel(self, args=None): # args can now be a dict from NLP
-        print("Let's plan your travel!")
+        # print("Let's plan your travel!") # Web: No direct print
         try:
             destination = args.get("destination") if args else None
             start_date = args.get("start_date") if args else None
             end_date = args.get("end_date") if args else None
 
             if not destination:
-                destination = input("Enter destination: ")
+                destination = input("Enter destination: ") # Still need input if not web
             if not start_date:
                 start_date = input("Enter start date (YYYY-MM-DD): ")
             if not end_date:
                 end_date = input("Enter end date (YYYY-MM-DD): ")
             
             if not destination or not start_date or not end_date:
-                print("All fields are required. Travel plan not saved.")
-                return
+                return "All fields are required. Travel plan not saved."
 
             new_plan = {
                 "destination": destination,
@@ -70,58 +50,36 @@ class Assistant:
                 "status": "planned"
             }
             self.travel_plans.append(new_plan)
-            print(f"Travel to {destination} from {start_date} to {end_date} planned successfully!")
+            return f"Travel to {destination} from {start_date} to {end_date} planned successfully!"
         except Exception as e:
-            print(f"Error planning travel: {e}")
+            return f"Error planning travel: {e}"
 
     def view_travel_plans(self, args=None):
-        print("\n--- Your Travel Plans ---")
         if not self.travel_plans:
-            print("No travel plans yet. Use 'plan_travel' to add one.")
-        else:
-            for i, plan in enumerate(self.travel_plans):
-                print(f"Plan {i+1}:")
-                print(f"  Destination: {plan['destination']}")
-                print(f"  Start Date: {plan['start_date']}")
-                print(f"  End Date: {plan['end_date']}")
-                print(f"  Status: {plan['status']}")
-                print("-" * 20)
-        print("\n")
-
-    def set_reminder(self, args=None):
-        print("Let's set a reminder!")
-        try:
-            message = input("Enter reminder message: ")
-            time_str = input("Enter reminder time (e.g., 'tomorrow 10am' or '2024-12-31 23:59'): ")
-            
-            if not message or not time_str:
-                print("Message and time are required. Reminder not set.")
-                return
-
-            new_reminder = {
-                "message": message,
-                "time_str": time_str, # Storing time as a string for now
-                "status": "pending" 
-            }
-            self.reminders.append(new_reminder)
-            print(f"Reminder '{message}' set for '{time_str}' successfully!")
-        except Exception as e:
-            print(f"Error setting reminder: {e}")
+            return "No travel plans yet. Use 'plan_travel' to add one."
+        response = "\n--- Your Travel Plans ---\n"
+        for i, plan in enumerate(self.travel_plans):
+            response += f"Plan {i+1}:\n"
+            response += f"  Destination: {plan['destination']}\n"
+            response += f"  Start Date: {plan['start_date']}\n"
+            response += f"  End Date: {plan['end_date']}\n"
+            response += f"  Status: {plan['status']}\n"
+            response += "-" * 20 + "\n"
+        return response
 
     def set_reminder(self, args=None): # args can now be a dict from NLP
-        print("Let's set a reminder!")
+        # print("Let's set a reminder!") # Web: No direct print
         try:
             message = args.get("message") if args else None
             time_str = args.get("time_str") if args else None
 
             if not message:
-                message = input("Enter reminder message: ")
+                message = input("Enter reminder message: ") # Still need input if not web
             if not time_str:
                 time_str = input("Enter reminder time (e.g., 'tomorrow 10am' or '2024-12-31 23:59'): ")
             
             if not message or not time_str:
-                print("Message and time are required. Reminder not set.")
-                return
+                return "Message and time are required. Reminder not set."
 
             new_reminder = {
                 "message": message,
@@ -129,40 +87,36 @@ class Assistant:
                 "status": "pending" 
             }
             self.reminders.append(new_reminder)
-            print(f"Reminder '{message}' set for '{time_str}' successfully!")
+            return f"Reminder '{message}' set for '{time_str}' successfully!"
         except Exception as e:
-            print(f"Error setting reminder: {e}")
+            return f"Error setting reminder: {e}"
 
     def view_reminders(self, args=None):
-        print("\n--- Your Reminders ---")
         if not self.reminders:
-            print("No reminders set yet. Use 'set_reminder' to add one.")
-        else:
-            for i, reminder in enumerate(self.reminders):
-                print(f"Reminder {i+1}:")
-                print(f"  Message: {reminder['message']}")
-                print(f"  Time: {reminder['time_str']}")
-                print(f"  Status: {reminder['status']}")
-                print("-" * 20)
-        print("\n")
+            return "No reminders set yet. Use 'set_reminder' to add one."
+        response = "\n--- Your Reminders ---\n"
+        for i, reminder in enumerate(self.reminders):
+            response += f"Reminder {i+1}:\n"
+            response += f"  Message: {reminder['message']}\n"
+            response += f"  Time: {reminder['time_str']}\n"
+            response += f"  Status: {reminder['status']}\n"
+            response += "-" * 20 + "\n"
+        return response
 
     def create_mind_map(self, args=None):
         map_name = ""
         if args:
             map_name = " ".join(args)
         else:
-            map_name = input("Enter the name/central topic for your new mind map: ")
+            map_name = input("Enter the name/central topic for your new mind map: ") # CLI fallback
 
         if not map_name:
-            print("Mind map name cannot be empty. Creation failed.")
-            return
-
+            return "Mind map name cannot be empty. Creation failed."
         if map_name in self.mind_maps:
-            print(f"A mind map named '{map_name}' already exists.")
-            return
-
+            return f"A mind map named '{map_name}' already exists."
+       
         self.mind_maps[map_name] = {"root": {"text": map_name, "children": []}}
-        print(f"Mind map '{map_name}' created successfully.")
+        return f"Mind map '{map_name}' created successfully."
 
     def _find_node_in_map(self, current_node, target_text):
         if current_node["text"] == target_text:
@@ -173,18 +127,16 @@ class Assistant:
                 return found
         return None
 
-    def add_mind_map_node(self, args=None):
-        map_name = input("Enter the name of the mind map to add a node to: ")
+    def add_mind_map_node(self, args=None): # args not used by current NLP, relies on input
+        map_name = input("Enter the name of the mind map to add a node to: ") # CLI
         if map_name not in self.mind_maps:
-            print(f"Mind map '{map_name}' not found.")
-            return
+            return f"Mind map '{map_name}' not found."
 
-        parent_node_text = input("Enter the text of the parent node (or root to add to central topic): ")
-        new_node_text = input("Enter the text for the new node/idea: ")
+        parent_node_text = input("Enter the text of the parent node (or root to add to central topic): ") # CLI
+        new_node_text = input("Enter the text for the new node/idea: ") # CLI
 
         if not new_node_text:
-            print("New node text cannot be empty. Node not added.")
-            return
+            return "New node text cannot be empty. Node not added."
         
         mind_map_data = self.mind_maps[map_name]
         
@@ -195,42 +147,37 @@ class Assistant:
             parent_node = self._find_node_in_map(mind_map_data["root"], parent_node_text)
 
         if not parent_node:
-            print(f"Parent node '{parent_node_text}' not found in mind map '{map_name}'.")
-            return
+            return f"Parent node '{parent_node_text}' not found in mind map '{map_name}'."
 
         parent_node["children"].append({"text": new_node_text, "children": []})
-        print(f"Node '{new_node_text}' added to '{parent_node['text']}' in mind map '{map_name}'.")
+        return f"Node '{new_node_text}' added to '{parent_node['text']}' in mind map '{map_name}'."
 
-    def _display_map_node(self, node, indent_level=0):
+    def _display_map_node(self, node, indent_level=0, current_map_str=""):
         indent = "  " * indent_level
-        print(f"{indent}- {node['text']}")
+        current_map_str += f"{indent}- {node['text']}\n"
         for child in node["children"]:
-            self._display_map_node(child, indent_level + 1)
+            current_map_str = self._display_map_node(child, indent_level + 1, current_map_str)
+        return current_map_str
 
     def view_mind_map(self, args=None):
         map_name = ""
         if args:
             map_name = " ".join(args)
         else:
-            map_name = input("Enter the name of the mind map to view: ")
+            map_name = input("Enter the name of the mind map to view: ") # CLI fallback
 
         if not map_name:
-            print("Mind map name cannot be empty.")
-            return
-            
+            return "Mind map name cannot be empty."
         if map_name not in self.mind_maps:
-            print(f"Mind map '{map_name}' not found.")
-            return
+            return f"Mind map '{map_name}' not found."
 
-        print(f"\n--- Mind Map: {map_name} ---")
-        self._display_map_node(self.mind_maps[map_name]["root"])
-        print("\n")
+        header = f"\n--- Mind Map: {map_name} ---\n"
+        return header + self._display_map_node(self.mind_maps[map_name]["root"])
 
     def handle_command(self, user_input_text):
         doc = nlp(user_input_text.lower())
-        
         intent = None
-        args = {} # To store extracted entities like dates, destinations
+        args_dict = {} # Renamed from 'args' to avoid conflict
 
         # Help intent
         if any(token.lemma_ in ["help", "assist", "guide"] for token in doc):
@@ -242,12 +189,12 @@ class Assistant:
             intent = "plan_travel"
             for ent in doc.ents:
                 if ent.label_ == "GPE": 
-                    args["destination"] = ent.text
+                    args_dict["destination"] = ent.text
                 elif ent.label_ == "DATE":
-                    if "start_date" not in args:
-                        args["start_date"] = ent.text
+                    if "start_date" not in args_dict:
+                        args_dict["start_date"] = ent.text
                     else:
-                        args["end_date"] = ent.text
+                        args_dict["end_date"] = ent.text
         elif any(token.lemma_ in ["travel", "trip", "journey", "vacation"] for token in doc) and \
              any(token.lemma_ in ["show", "view", "list", "see", "find"] for token in doc):
             intent = "view_travel_plans"
@@ -258,17 +205,39 @@ class Assistant:
             intent = "set_reminder"
             message_parts = []
             time_entity = None
-            for token in doc:
-                if token.lemma_ in ["remind", "me", "to"]: continue
-                if token.ent_type_ == "TIME" or any(t.lemma_ in ["today", "tomorrow", "yesterday"] for t in token.subtree):
-                    if not time_entity: 
-                         time_entity = " ".join(t.text for t in token.subtree)
-                    continue 
-                message_parts.append(token.text)
+            # Iterate through tokens to reconstruct message and find time
+            message_token_indices = []
+            time_token_indices = []
+
+            for i, token in enumerate(doc):
+                # Try to identify core action verbs/prepositions for reminder text
+                if token.lemma_ in ["remind", "me", "to", "set", "alert", "for", "on", "at"]:
+                    continue # Skip these keywords from the message itself
+                
+                # Check for time entities or time-related keywords
+                is_time_related = False
+                if token.ent_type_ == "TIME":
+                    is_time_related = True
+                else: # Check subtree for common time words if not a formal TIME entity
+                    for sub_token in token.subtree:
+                        if sub_token.lemma_ in ["today", "tomorrow", "yesterday", "now"] or \
+                           any(num_char.isdigit() for num_char in sub_token.text): # Basic check for time like "10am"
+                            is_time_related = True
+                            break
+                
+                if is_time_related:
+                    # Collect all tokens of a potential time phrase
+                    current_time_phrase = " ".join(t.text for t in token.subtree)
+                    if not time_entity or len(current_time_phrase) > len(time_entity): # Prefer longer (more complete) time phrases
+                        time_entity = current_time_phrase
+                else:
+                    message_parts.append(token.text)
+
             if message_parts:
-                args["message"] = " ".join(message_parts).strip()
+                args_dict["message"] = " ".join(message_parts).strip().replace(time_entity if time_entity else "", "").strip() # Attempt to remove time from message
             if time_entity:
-                args["time_str"] = time_entity
+                args_dict["time_str"] = time_entity.strip()
+
 
         elif any(token.lemma_ in ["reminder", "remind"] for token in doc) and \
              any(token.lemma_ in ["show", "view", "list", "see", "find"] for token in doc):
@@ -279,11 +248,11 @@ class Assistant:
              any(token.lemma_ in ["create", "new", "start", "make"] for token in doc):
             intent = "create_mind_map"
             name_parts = []
-            for token in doc:
-                if token.lemma_ not in ["mindmap", "mind", "map", "create", "new", "start", "make", "a", "an", "the"]:
+            for token in doc: # Basic name extraction, can be improved
+                if token.lemma_ not in ["mindmap", "mind", "map", "create", "new", "start", "make", "a", "an", "the", "for", "of", "called"]:
                      name_parts.append(token.text)
             if name_parts:
-                args["map_name"] = " ".join(name_parts).strip()
+                args_dict["map_name"] = " ".join(name_parts).strip()
 
         elif any(token.lemma_ in ["mindmap", "mind map", "map"] for token in doc) and \
              any(token.lemma_ in ["add", "node", "idea"] for token in doc):
@@ -293,41 +262,45 @@ class Assistant:
              any(token.lemma_ in ["show", "view", "display", "open"] for token in doc):
             intent = "view_mind_map"
             name_parts = []
-            for token in doc:
-                if token.lemma_ not in ["mindmap", "mind", "map", "show", "view", "display", "open", "a", "an", "the"]:
+            for token in doc: # Basic name extraction
+                if token.lemma_ not in ["mindmap", "mind", "map", "show", "view", "display", "open", "a", "an", "the", "for", "of"]:
                      name_parts.append(token.text)
             if name_parts:
-                args["map_name"] = " ".join(name_parts).strip()
-
+                args_dict["map_name"] = " ".join(name_parts).strip()
 
         if intent and intent in self.commands:
-            print(f"... Detected intent: {intent} with args: {args}")
-            if intent == "plan_travel": 
-                self.commands[intent](args) # Pass NLP args
-            elif intent == "set_reminder": 
-                 self.commands[intent](args) # Pass NLP args
+            # print(f"DEBUG: Intent: {intent}, Args: {args_dict}") # Optional: for logging
+            
+            if intent == "plan_travel":
+                return self.commands[intent](args_dict) 
+            elif intent == "set_reminder":
+                 return self.commands[intent](args_dict)
             elif intent == "create_mind_map":
-                self.commands[intent](args.get("map_name", "").split() if args.get("map_name") else None)
+                name_list = args_dict.get("map_name", "").split() if args_dict.get("map_name") else None
+                return self.commands[intent](name_list)
             elif intent == "view_mind_map":
-                self.commands[intent](args.get("map_name", "").split() if args.get("map_name") else None)
+                name_list = args_dict.get("map_name", "").split() if args_dict.get("map_name") else None
+                return self.commands[intent](name_list)
             elif intent == "add_mind_map_node": 
-                self.commands[intent]() # No NLP args for now
-            else: 
-                self.commands[intent](args if args else None)
+                return self.commands[intent]() # Still relies on input() for details
+            else: # For commands like help, view_travel_plans, view_reminders
+                return self.commands[intent](args_dict if args_dict else None)
         else:
-            print(f"Sorry, I didn't understand that. Try 'help' for available commands.")
+            return f"Sorry, I didn't understand that. Try 'help' for available commands."
 
 if __name__ == "__main__":
     assistant = Assistant()
-    print("Welcome to your AI Assistant!")
-    assistant.show_help()
+    # The show_help() call here will print the returned string.
+    print(assistant.show_help()) # Modified to print the returned string
     while True:
         try:
             user_input = input("> ")
             if user_input.lower() == "exit":
                 print("Goodbye!")
                 break
-            assistant.handle_command(user_input)
+            # The result from handle_command is now printed here.
+            response = assistant.handle_command(user_input)
+            print(response)
         except KeyboardInterrupt:
             print("\nGoodbye!")
             break
